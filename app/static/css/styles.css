@@ -106,7 +106,10 @@ body {
     display: flex;
     flex-direction: column;
 }
-
+#voice-button{
+    background-color: transparent;
+    border: none;
+}
 .chat-window {
     flex: 1;
     padding: 10px;
