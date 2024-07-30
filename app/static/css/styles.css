@@ -58,11 +58,11 @@ body {
 .new-chat-btn, .toggle-sidebar-btn, #send-button {
     background-color: #555;
     color: white;
-    padding: 10px;
+    padding: 12px;
     border: none;
     border-radius: 10px; /* Less circular */
     cursor: pointer;
-    margin: 10px;
+    margin: 5px;
     transition: background-color 0.3s;
 }
 
@@ -76,7 +76,35 @@ body {
     flex-direction: column;
     background-color: #1e1e1e;
     height: 100vh;
-    width: 100%;
+    width: auto;
+}
+
+.content-wrapper {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.media-display {
+    width: 40%;
+    background-color: #2c2c2c;
+    padding: 10px;
+    border-right: 1px solid #333;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ai{
+    height: 70%;
+    width: 70%;
+}
+
+.chat-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .chat-window {
@@ -88,8 +116,9 @@ body {
 
 .chat-input-container {
     display: flex;
-    padding: 10px;
+    padding: 8px;
     border-top: 1px solid #333;
+    border-radius: 15px;
 }
 
 .chat-input-container input {
@@ -110,7 +139,7 @@ body {
 
 .chat-message.user .message-bubble {
     align-self: flex-end;
-    background-color: #007bff;
+    background-color: #5b5858;
     color: white;
 }
 
@@ -144,6 +173,10 @@ body {
     .sidebar {
         width: 100px;
     }
+    .ai{
+        height: 50%;
+        width: 90%;
+    }
 
     .sidebar-header {
         font-size: 14px;
@@ -164,5 +197,60 @@ body {
 }
 
 .sidebar.hidden {
-    transform: translateX(-100%);
+    display: none;
+}
+
+.toggle-sidebar-btn.hidden {
+    display: none;
+}
+
+#user-input {
+    border-radius: 18px;
+}
+
+.account-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.account-icon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #2c2c2c;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.account-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-section {
+    padding: 12px;
+}
+
+.dropdown-section label {
+    display: block;
+    margin-bottom: 8px;
+    color: white;
+}
+
+.dropdown-section select {
+    width: 100%;
+    padding: 8px;
+    background-color: #444;
+    border: 1px solid #333;
+    color: white;
+    border-radius: 5px;
+    appearance: none;
+    cursor: pointer;
 }

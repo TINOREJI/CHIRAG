@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatGPT-like UI</title>
+    <title>Chat Application</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
@@ -20,11 +20,41 @@
         </div>
         <div class="chat-container">
             <div class="navbar">
-                <button id="show-sidebar" class="toggle-sidebar-btn">&#9776;</button>
-                <div class="navbar-title">ChatGPT-like UI</div>
+                <div class="toggle" id="toggle">
+                    <button id="show-sidebar" class="toggle-sidebar-btn">&#9776;</button>
+                </div>
+                <div class="navbar-title">FourHorses</div>
+                <div class="account-dropdown">
+                    <img src="{{ url_for('static', filename='assests/avatar.jpg') }}" alt="Account" class="account-icon" />
+                    <div class="dropdown-content">
+                        <div class="dropdown-section">
+                            <label for="age-group">Age Group:</label>
+                            <select id="age-group">
+                                <option value="10-18">10-18</option>
+                                <option value="19-35">19-35</option>
+                                <option value="36+">36+</option>
+                            </select>
+                        </div>
+                        <div class="dropdown-section">
+                            <label for="gender">Gender:</label>
+                            <select id="gender">
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="chat-window" id="chat-window">
-                <!-- Chat messages will appear here -->
+            <div class="content-wrapper">
+                <div class="media-display" id="media-display">
+                    <!-- Media content will go here -->
+                     <img src="{{ url_for('static', filename='assests/images.jpeg') }}" alt="virtualAIChatBot" class="ai" />
+                </div>
+                <div class="chat-section">
+                    <div class="chat-window" id="chat-window">
+                        <!-- Chat messages will appear here -->
+                    </div>
+                </div>
             </div>
             <div class="chat-input-container">
                 <input type="text" id="user-input" placeholder="Type your message here...">

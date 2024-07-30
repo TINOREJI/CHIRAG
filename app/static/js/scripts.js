@@ -7,28 +7,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const sidebar = document.getElementById('sidebar');
     const newChatButton = document.getElementById('new-chat-button');
     const chatList = document.getElementById('chat-list');
-    let chatCount = 1;
+    const chatContainer = document.querySelector('.chat-container');
+    const togglebtn = document.getElementById('toggle');
 
-    toggleSidebarButton.addEventListener('click', () => {
+    toggleSidebarButton.addEventListener('click', toggleSide);
+
+    function toggleSide() {
         sidebar.classList.toggle('hidden');
         if (sidebar.classList.contains('hidden')) {
-            document.querySelector('.chat-container').style.width = '100%';
+            chatContainer.style.width = '100%';
+            showSidebarButton.style.display = 'block';  // Show the button to reopen the sidebar
         } else {
-            document.querySelector('.chat-container').style.width = 'calc(100% - 250px)';
+            chatContainer.style.width = 'calc(100% - 250px)';
+            showSidebarButton.style.display = 'none';  // Hide the button as the sidebar is already open
         }
-    });
+    }
 
     showSidebarButton.addEventListener('click', () => {
         sidebar.classList.remove('hidden');
-        document.querySelector('.chat-container').style.width = 'calc(100% - 250px)';
+        chatContainer.style.width = 'calc(100% - 250px)';
+        showSidebarButton.style.display = 'none';  // Hide the button as the sidebar is open
     });
 
-    // newChatButton.addEventListener('click', () => {
-    //     const newChatItem = document.createElement('div');
-    //     newChatItem.classList.add('chat-list-item');
-    //     newChatItem.textContent = `Chat ${chatCount++}`;
-    //     chatList.appendChild(newChatItem);
-    // });
+    newChatButton.addEventListener('click', () => {
+        const newChatItem = document.createElement('div');
+        newChatItem.classList.add('chat-list-item');
+        newChatItem.textContent = 'New Chat';
+        chatList.appendChild(newChatItem);
+    });
 
     sendButton.addEventListener('click', () => {
         const userMessage = userInput.value.trim();
@@ -58,55 +64,14 @@ document.addEventListener("DOMContentLoaded", () => {
         chatWindow.scrollTop = chatWindow.scrollHeight;
     }
 
-    function getRandomResponse() {
-        const responses = [
-            "Hello! How can I help you today?",
-            "I'm here to assist you.",
-            "What can I do for you?",
-            "How's your day going?",
-            "Feel free to ask me anything."
-        ];
-        return responses[Math.floor(Math.random() * responses.length)];
-    }
-
     function getAiResponse(message) {
-        // For demo purposes, we use a random response
-        const aiResponse = getRandomResponse();
-        appendMessage(aiResponse, 'ai');
+        $.ajax({
+            url: '/search',
+            type: 'POST',
+            data: { query: message },
+            success: function(response) {
+                appendMessage(response.message, 'ai');
+            }
+        });
     }
 });
-
-
-
-//  NEW CODE: 
-
-
-let chatCount = 1;
-
-        // Handle new chat button click
-        const newChatButton = document.getElementById('new-chat-button');
-        const chatList = document.getElementById('chat-list');
-
-        newChatButton.addEventListener('click', () => {
-            const newChatItem = document.createElement('div');
-            newChatItem.classList.add('chat-list-item');
-            newChatItem.textContent = `Chat ${chatCount++}`;
-            chatList.appendChild(newChatItem);
-        });
-
-        // Handle send button click
-        $('#send-button').click(function() {
-            var query = $('#user-input').val();
-            $.ajax({
-                url: '/search',
-                type: 'POST',
-                data: { query: query },
-                success: function(response) {
-                    const chatWindow = document.getElementById('chat-window');
-                    const message = document.createElement('div');
-                    message.textContent = response.message;
-                    chatWindow.appendChild(message);
-                    chatWindow.scrollTop = chatWindow.scrollHeight;
-                }
-            });
-        });
