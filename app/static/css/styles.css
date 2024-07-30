@@ -70,6 +70,12 @@ body {
     background-color: #777;
 }
 
+.addNew{
+    height: 10px;
+    width: 12px;
+    padding-right: 8px;
+}
+
 .chat-container {
     flex: 1;
     display: flex;
@@ -203,7 +209,7 @@ body {
     display: none;
 }
 
-.toggle-sidebar-btn.hidden {
+.toggle-sidebar-btn.hidden2 {
     display: none;
 }
 

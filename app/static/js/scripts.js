@@ -9,12 +9,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const chatList = document.getElementById('chat-list');
     const voiceButton = document.getElementById('voice-button');
     const audioPlayback = document.getElementById('audio-playback');
+    const toggleSidebar=document.getElementById('toggle-sidebar-btn');
     let chatCount = 1;
 
     toggleSidebarButton.addEventListener('click', toggleSide);
 
     function toggleSide() {
-        sidebar.classList.toggle('hidden');
+        sidebar.classList.add('hidden');
+        showSidebarButton.classList.remove('hidden2');
         if (sidebar.classList.contains('hidden')) {
             chatContainer.style.width = '100%';
             showSidebarButton.style.display = 'block';  // Show the button to reopen the sidebar
@@ -26,14 +28,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     showSidebarButton.addEventListener('click', () => {
         sidebar.classList.remove('hidden');
+        showSidebarButton.classList.add('hidden2');
         chatContainer.style.width = 'calc(100% - 250px)';
         showSidebarButton.style.display = 'none';  // Hide the button as the sidebar is open
     });
 
+
     newChatButton.addEventListener('click', () => {
         const newChatItem = document.createElement('div');
         newChatItem.classList.add('chat-list-item');
-        newChatItem.textContent = 'New Chat';
+        newChatItem.textContent = `New Chat ${chatCount}`;
         chatList.appendChild(newChatItem);
     });
 

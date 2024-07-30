@@ -9,7 +9,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 main = Blueprint('main', __name__)
 
 # Load the model when the app starts
-model = load_model(os.path.join(os.path.dirname(__file__), 'model', 'model.h5'))
+#model = load_model(os.path.join(os.path.dirname(__file__), 'model', 'model.h5'))
 
 def translate_to_eng(text):
     # Implement actual translation logic here
