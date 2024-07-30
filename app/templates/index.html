@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChatGPT-like UI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    
 </head>
 <body>
     <div class="main-container">
@@ -26,10 +27,15 @@
             <div class="chat-window" id="chat-window">
                 <!-- Chat messages will appear here -->
             </div>
-            <div class="chat-input-container">
-                <input type="text" id="user-input" placeholder="Type your message here...">
-                <button id="send-button">Send</button>
-            </div>
+            
+                <!-- SOUND INPUT -->
+                <div class="chat-input-container">
+                    <input type="text" id="user-input" placeholder="Type your message here...">
+                    <button id="send-button">Send</button>
+                    <button id="voice-button">🎤</button> <!-- Add this button -->
+                    <audio id="audio-playback" controls></audio> <!-- Add this audio element -->
+                </div>
+            
         </div>
     </div>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>

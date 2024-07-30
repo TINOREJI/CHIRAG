@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const sidebar = document.getElementById('sidebar');
     const newChatButton = document.getElementById('new-chat-button');
     const chatList = document.getElementById('chat-list');
+    const voiceButton = document.getElementById('voice-button');
+    const audioPlayback = document.getElementById('audio-playback');
     let chatCount = 1;
 
     toggleSidebarButton.addEventListener('click', () => {
@@ -30,12 +32,66 @@ document.addEventListener("DOMContentLoaded", () => {
     //     chatList.appendChild(newChatItem);
     // });
 
+
+    //   OUT OF THE FOLLOWING TWO ONE HAVE TO BE USED ONLY :
+    voiceButton.addEventListener('click', () => {
+        // Check for browser support
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                const mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.start();
+
+                let audioChunks = [];
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const formData = new FormData();
+                    formData.append('audio', audioBlob, 'audio.wav');
+
+                    fetch('/process_input', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        appendMessage(data.translated_text, 'user');
+                        appendMessage(data.response, 'ai');
+                        appendMessage(data.native_response, 'native');
+                        audioPlayback.src = data.audio_url;
+                        audioPlayback.play();
+                    });
+                };
+
+                setTimeout(() => mediaRecorder.stop(), 5000); // Stop recording after 5 seconds
+            });
+        } else {
+            alert('Audio recording is not supported in this browser.');
+        }
+    });
+        
+
     sendButton.addEventListener('click', () => {
         const userMessage = userInput.value.trim();
         if (userMessage !== "") {
             appendMessage(userMessage, 'user');
             userInput.value = '';
-            getAiResponse(userMessage);
+
+            fetch('/process_input', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ text: userMessage })
+            })
+            .then(response => response.json())
+            .then(data => {
+                appendMessage(data.translated_text, 'user');
+                appendMessage(data.response, 'ai');
+                appendMessage(data.native_response, 'native');
+                audioPlayback.src = data.audio_url;
+                audioPlayback.play();
+            });
         }
     });
 
@@ -57,23 +113,33 @@ document.addEventListener("DOMContentLoaded", () => {
         chatWindow.appendChild(messageElement);
         chatWindow.scrollTop = chatWindow.scrollHeight;
     }
+    
+    // function getAiResponse(message) {
+    //     // For demo purposes, we use a random response
+    //     $.ajax({
+    //         url: '/search',
+    //         type: 'POST',
+    //         data: { query: message },
+    //         success: function(response) {
+    //             const aiResponse = response.message;
+    //             appendMessage(aiResponse, 'ai');
 
-    function getRandomResponse() {
-        const responses = [
-            "Hello! How can I help you today?",
-            "I'm here to assist you.",
-            "What can I do for you?",
-            "How's your day going?",
-            "Feel free to ask me anything."
-        ];
-        return responses[Math.floor(Math.random() * responses.length)];
-    }
+    //             // Translate the AI response to the native language
+    //             fetch('/translate_to_native', {
+    //                 method: 'POST',
+    //                 headers: { 'Content-Type': 'application/json' },
+    //                 body: JSON.stringify({ text: aiResponse })
+    //             })
+    //             .then(response => response.json())
+    //             .then(data => {
+    //                 const audioUrl = data.audio_url;
+    //                 audioPlayback.src = audioUrl;
+    //                 audioPlayback.play();
+    //             });
+    //         }
+    //     });
+    // }
 
-    function getAiResponse(message) {
-        // For demo purposes, we use a random response
-        const aiResponse = getRandomResponse();
-        appendMessage(aiResponse, 'ai');
-    }
 });
 
 

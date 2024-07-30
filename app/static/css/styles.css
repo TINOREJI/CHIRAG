@@ -78,7 +78,10 @@ body {
     height: 100vh;
     width: 100%;
 }
-
+#voice-button{
+    background-color: transparent;
+    border: none;
+}
 .chat-window {
     flex: 1;
     padding: 10px;
