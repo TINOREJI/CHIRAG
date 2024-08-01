@@ -95,14 +95,44 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then(response => response.json())
             .then(data => {
-                appendMessage(data.translated_text, 'user');
+                // appendMessage(data.translated_text, 'user');
                 appendMessage(data.response, 'ai');
-                appendMessage(data.native_response, 'native');
-                audioPlayback.src = data.audio_url;
-                audioPlayback.play();
+                // appendMessage(data.native_response, 'native');
+                // audioPlayback.src = data.audio_url;
+                // audioPlayback.play();
             });
         }
     });
+    // $(document).ready(function() {
+    //     $('#sendButton').on('click', function() {
+    //         const userMessage = $('#userInput').val().trim();
+    //         if (userMessage !== "") {
+    //             appendMessage(userMessage, 'user');
+    //             $('#userInput').val('');
+    
+    //             $.ajax({
+    //                 type: 'POST',
+    //                 url: '/process_input',
+    //                 contentType: 'application/json',
+    //                 data: JSON.stringify({ text: userMessage }),
+    //                 success: function(data) {
+    //                     // appendMessage(data.translated_text, 'user');
+    //                     appendMessage(data.response, 'ai');
+    //                     // appendMessage(data.native_response, 'native');
+    //                     // audioPlayback.src = data.audio_url;
+    //                     // audioPlayback.play();
+    //                 },
+    //                 error: function(error) {
+    //                     console.error('Error:', error);
+    //                 }
+    //             });
+    //         }
+    //     });
+       
+       
+    // });
+
+
 
     userInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {

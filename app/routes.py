@@ -1,88 +1,221 @@
-from flask import Blueprint, render_template, request, jsonify
+from transformers import TFBartForConditionalGeneration, BartTokenizer
+
+from flask import Blueprint, render_template, request, jsonify, current_app
 from werkzeug.utils import secure_filename
 import os
-import numpy as np
-from tensorflow.keras.models import load_model
-from tensorflow.keras.preprocessing.text import Tokenizer
-from tensorflow.keras.preprocessing.sequence import pad_sequences
+from transformers import BartTokenizer, BartForConditionalGeneration
 
 main = Blueprint('main', __name__)
 
-# Load the model when the app starts
-#model = load_model(os.path.join(os.path.dirname(__file__), 'model', 'model.h5'))
+# Ensure 'temp' directory exists
+if not os.path.exists('temp'):
+    os.makedirs('temp')
 
 def translate_to_eng(text):
     # Implement actual translation logic here
-    return "Translated English Text"
+    return text
 
 def translate_to_native(text):
     # Implement actual translation logic here
-    return {"text": "Translated Native Text", "audio_url": "http://example.com/audio/native.wav"}
-
+    # return {"text": "Translated Native Text", "audio_url": "http://example.com/audio/native.wav"}
+    return text
 
 @main.route('/')
 def index():
     return render_template('index.html')
 
-# INPUT AS VOICE/TEXT in any language :
-
-
 @main.route('/process_input', methods=['POST'])
 def process_input():
-    data = request.json
-    text = data.get('text')
-    audio_file = data.get('audio')
+    try:
+        data = request.json
+        text = data.get('text')
+        audio_file = request.files.get('audio')
 
-    if text:
-        # Process text input
-        translated_text = translate_to_eng(text)
-        response = process_text(translated_text)
-        
-        native_response = translate_to_native(response)
-        return jsonify({
-            "translated_text": translated_text,
-            "response": response,
-            "native_response": native_response['text'],
-            "audio_url": native_response['audio_url']
-        })
+        if text:
+            response = model_results(text)
+            # response = text 
+            return jsonify({
+                "response": response,
+            })
+
+        if audio_file:
+            audio_path = os.path.join('temp', secure_filename(audio_file.filename))
+            audio_file.save(audio_path)
+            translated_text = translate_to_eng(audio_path)
+            response = process_text(translated_text)
+            native_response = translate_to_native(response)
+            return jsonify({
+                "response": response,
+                "native_response": native_response
+            })
+    except Exception as e:
+        current_app.logger.error(f"Error processing input: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
+
+
+# def model_results(x):
+#     # Load the fine-tuned model and tokenizer
+#     model = TFBartForConditionalGeneration.from_pretrained('app/model/kid-bart')
+#     tokenizer = BartTokenizer.from_pretrained('app/model/kid-bart')
+
+#     def preprocess_question(question, tokenizer, max_length=512):
+#         inputs = tokenizer(
+#             question,
+#             max_length=max_length,
+#             truncation=True,
+#             padding='max_length',
+#             return_tensors='tf'  # Use 'tf' for TensorFlow
+#         )
+#         return inputs
+
+#     def generate_answer(inputs, model):
+#         outputs = model.generate(
+#             input_ids=inputs['input_ids'],
+#             attention_mask=inputs['attention_mask'],
+#             max_length=150,
+#             num_beams=5,
+#             early_stopping=True,
+#             no_repeat_ngram_size=2,
+#             temperature=1.0,
+#             top_k=50,
+#             top_p=0.95
+#         )
+#         return outputs
+
+#     def decode_answer(outputs, tokenizer):
+#         answer = tokenizer.decode(outputs[0], skip_special_tokens=True)
+#         return answer
+
+#     inputs = preprocess_question(x, tokenizer)
+#     outputs = generate_answer(inputs, model)
+#     answer = decode_answer(outputs, tokenizer)
+#     return answer
+
+
+# def model_results(x):
+#     # Load the fine-tuned model and tokenizer
+#     model = TFBartForConditionalGeneration.from_pretrained('app/model/kid-bart')
+#     tokenizer = BartTokenizer.from_pretrained('app/model/kid-bart')
+
+#     def preprocess_question(question, tokenizer, max_length=128):
+#         inputs = tokenizer(
+#             question,
+#             max_length=max_length,
+#             truncation=True,
+#             padding='max_length',
+#             return_tensors='tf'  # Use 'tf' for TensorFlow
+#         )
+#         return inputs
+
+#     def generate_answer(inputs, model):
+#         outputs = model.generate(
+#             input_ids=inputs['input_ids'],
+#             attention_mask=inputs['attention_mask'],
+#             max_length=150,
+#             num_beams=5,
+#             early_stopping=True,
+#             no_repeat_ngram_size=2,
+#             temperature=1.0,
+#             top_k=50,
+#             top_p=0.95
+#         )
+#         return outputs
+
+#     def decode_answer(outputs, tokenizer):
+#         answer = tokenizer.decode(outputs[0], skip_special_tokens=True)
+#         return answer
+
+#     inputs = preprocess_question(x, tokenizer)
+#     outputs = generate_answer(inputs, model)
+#     answer = decode_answer(outputs, tokenizer)
     
-    if audio_file:
-        # Process audio input
-        audio_path = os.path.join('temp', secure_filename(audio_file.filename))
-        audio_file.save(audio_path)
-        translated_text = translate_to_eng(audio_path)
-        response = process_text(translated_text)
-        
-        native_response = translate_to_native(response)
-        return jsonify({
-            "translated_text": translated_text,
-            "response": response,
-            "native_response": native_response['text'],
-            "audio_url": native_response['audio_url']
-        })
+#     # Clear TensorFlow session to free up memory
+#     tf.keras.backend.clear_session()
+    
+#     return answer
 
-# HERE We have the Translated text into english, which is being fed to the LLM MODEL:
 
-def process_text(text):
-    # Preprocess the input text for the model
-    input_data = preprocess_input(text)
+def model_results(x):
+    # Load the same fine-tuned model and tokenizer
+    model = TFBartForConditionalGeneration.from_pretrained('app/model/kid-bart')
+    tokenizer = BartTokenizer.from_pretrained('app/model/kid-bart')
 
-    # Get the model's prediction
-    prediction = model.predict(input_data)
+    def preprocess_question(question, tokenizer, max_length=50):
+        inputs = tokenizer(
+            question,
+            max_length=max_length,  # Reduced max length for inputs
+            truncation=True,
+            padding='max_length',
+            return_tensors='tf'
+        )
+        return inputs
 
-    # Process the prediction to get a response
-    response = postprocess_output(prediction)
-    return response
+    def generate_answer(inputs, model):
+        outputs = model.generate(
+            input_ids=inputs['input_ids'],
+            attention_mask=inputs['attention_mask'],
+            max_length=50,  # Reduced max length for outputs
+            num_beams=2,    # Fewer beams for less computation
+            early_stopping=True
+        )
+        return outputs
 
-def preprocess_input(text):
-    # Implement your preprocessing steps here
-    tokenizer = Tokenizer(num_words=10000)  # Ensure tokenizer fits your model's training
-    sequences = tokenizer.texts_to_sequences([text])
-    input_data = pad_sequences(sequences, maxlen=100)  # Ensure maxlen fits your model's training
-    return input_data
+    def decode_answer(outputs, tokenizer):
+        answer = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        return answer
 
-def postprocess_output(prediction):
-    # Implement your postprocessing steps here
-    response = np.argmax(prediction)
-    return str(response)  # Convert the response to a string or appropriate format
+    # Process the input and generate the answer
+    inputs = preprocess_question(x, tokenizer)
+    outputs = generate_answer(inputs, model)
+    answer = decode_answer(outputs, tokenizer)
+
+    # Clear TensorFlow session to free up memory
+    # tf.keras.backend.clear_session()
+
+    return answer
+
+
+
+# def model_results(x):
+#     # Load the fine-tuned model and tokenizer
+#     model = BartForConditionalGeneration.from_pretrained('app/model/kid-bart')
+#     tokenizer = BartTokenizer.from_pretrained('app/model/kid-bart')
+
+#     def preprocess_question(question, tokenizer, max_length=512):
+#         inputs = tokenizer(
+#             question,
+#             max_length=max_length,
+#             truncation=True,
+#             padding='max_length',
+#             return_tensors='pt'
+#         )
+#         return inputs
+
+#     def generate_answer(inputs, model):
+#         outputs = model.generate(
+#             input_ids=inputs['input_ids'],
+#             attention_mask=inputs['attention_mask'],
+#             max_length=150,
+#             num_beams=5,
+#             early_stopping=True,
+#             no_repeat_ngram_size=2,
+#             temperature=1.0,
+#             top_k=50,
+#             top_p=0.95
+#         )
+#         return outputs
+
+#     def decode_answer(outputs, tokenizer):
+#         answer = tokenizer.decode(outputs[0], skip_special_tokens=True)
+#         return answer
+
+#     inputs = preprocess_question(x, tokenizer)
+#     outputs = generate_answer(inputs, model)
+#     answer = decode_answer(outputs, tokenizer)
+#     return answer
+
+# def process_text(text):
+    # input_data = text
+    # ans = model_results(input_data)
+    # return ans
 
