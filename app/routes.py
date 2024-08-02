@@ -175,7 +175,6 @@ def model_results(x):
     return answer
 
 
-
 # def model_results(x):
 #     # Load the fine-tuned model and tokenizer
 #     model = BartForConditionalGeneration.from_pretrained('app/model/kid-bart')
@@ -213,9 +212,3 @@ def model_results(x):
 #     outputs = generate_answer(inputs, model)
 #     answer = decode_answer(outputs, tokenizer)
 #     return answer
-
-# def process_text(text):
-    # input_data = text
-    # ans = model_results(input_data)
-    # return ans
-
