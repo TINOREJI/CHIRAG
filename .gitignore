@@ -42,6 +42,9 @@ build/Release
 node_modules/
 jspm_packages/
 .venv/
+app/model/
+app/routes.py
+app/__init__.py
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 

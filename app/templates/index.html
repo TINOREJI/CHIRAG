@@ -3,28 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Application</title>
+    <title>BlackRock Hackathon</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="main-container">
         <div class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <span>Chats</span>
+                <span class="chats-head" style="font-weight: 600;"><img src="{{ url_for('static', filename='assests/image.png') }}" alt="" class="logoChatbot">
+                    Chats</span>
                 <button id="toggle-sidebar" class="toggle-sidebar-btn">&times;</button>
             </div>
             <div class="sidebar-content" id="chat-list">
                 <!-- List of chats will go here -->
             </div>
-            <button id="new-chat-button" class="new-chat-btn"><img src="{{ url_for('static', filename='assests/add-30.png') }}" alt="addCreateButton" class="addNew">Create New Chat</button>
+            <div class="createbutton">
+                <button id="new-chat-button" class="new-chat-btn">
+                    <img src="{{ url_for('static', filename='assests/add-30.png') }}" alt="addCreateButton" class="addNew">Create New Chat
+                </button>
+            </div>
         </div>
         <div class="chat-container">
             <div class="navbar">
                 <div class="toggle" id="toggle">
                     <button id="show-sidebar" class="toggle-sidebar-btn hidden2">&#9776;</button>
                 </div>
-                <div class="navbar-title">FourHorses</div>
+                <div class="navbar-title">CHIRAG</div>
                 <div class="account-dropdown">
                     <img src="{{ url_for('static', filename='assests/avatar.jpg') }}" alt="Account" class="account-icon" />
                     <div class="dropdown-content">
@@ -45,10 +52,10 @@
                         </div>
                         <div class="dropdown-section">
                             <label for="language">Language:</label>
-                            <select id="lang">
-                                <option value="English">English</option>
-                                <option value="Hindi">Hindi</option>
-                                <option value="Malyalam">Malyalam</option>
+                            <select id="language">
+                                <option value="english">English</option>
+                                <option value="hindi">Hindi</option>
+                                <option value="malayalam">Malayalam</option>
                             </select>
                         </div>
                     </div>
@@ -57,23 +64,28 @@
             <div class="content-wrapper">
                 <div class="media-display" id="media-display">
                     <!-- Media content will go here -->
-                     <img src="{{ url_for('static', filename='assests/images.jpeg') }}" alt="virtualAIChatBot" class="ai" />
-                </div>
+                    <img src="{{ url_for('static', filename='assests/images.jpeg') }}" alt="virtualAIChatBot" class="ai" style="display:block;" />
+                    <video id="ai-video" width="320" height="240" controls = "none;" autoplay style="display: none;">
+                        <source src="{{ url_for('static', filename='assests/teen.mp4') }}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    </div>
                 <div class="chat-section">
+                    <div id="predefined-questions" class="predefined-questions">
+                        <!---Predefined Questions-->
+                    </div>
                     <div class="chat-window" id="chat-window">
                         <!-- Chat messages will appear here -->
                     </div>
                 </div>
             </div>
-            
-                <!-- SOUND INPUT -->
-                <div class="chat-input-container">
-                    <input type="text" id="user-input" placeholder="Type your message here...">
-                    <button id="send-button">Send</button>
-                    <button id="voice-button">🎤</button> <!-- Add this button -->
-                    <audio id="audio-playback" controls></audio> <!-- Add this audio element -->
-                </div>
-            
+            <!-- SOUND INPUT -->
+            <div class="chat-input-container">
+                <input type="text" id="user-input" placeholder="Type your message here...">
+                <button id="voice-button">🎤</button>
+                <button id="send-button">Send</button>
+                <audio id="audio-playback" controls style="display: none;"></audio>
+            </div>
         </div>
     </div>
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
