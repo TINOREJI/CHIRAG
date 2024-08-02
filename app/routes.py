@@ -9,7 +9,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 main = Blueprint('main', __name__)
 
 # Load the model when the app starts
-#model = load_model(os.path.join(os.path.dirname(__file__), 'model', 'model.h5'))
+# model = load_model(os.path.join(os.path.dirname(__file__), 'model', 'model.h5'))
 
 def translate_to_eng(text):
     # Implement actual translation logic here
@@ -19,13 +19,9 @@ def translate_to_native(text):
     # Implement actual translation logic here
     return {"text": "Translated Native Text", "audio_url": "http://example.com/audio/native.wav"}
 
-
 @main.route('/')
 def index():
     return render_template('index.html')
-
-# INPUT AS VOICE/TEXT in any language :
-
 
 @main.route('/process_input', methods=['POST'])
 def process_input():
@@ -61,17 +57,15 @@ def process_input():
             "audio_url": native_response['audio_url']
         })
 
-# HERE We have the Translated text into english, which is being fed to the LLM MODEL:
-
 def process_text(text):
     # Preprocess the input text for the model
     input_data = preprocess_input(text)
 
     # Get the model's prediction
-    prediction = model.predict(input_data)
+    # prediction = model.predict(input_data)
 
     # Process the prediction to get a response
-    response = postprocess_output(prediction)
+    response = postprocess_output(None)  # Use actual prediction
     return response
 
 def preprocess_input(text):
@@ -83,6 +77,5 @@ def preprocess_input(text):
 
 def postprocess_output(prediction):
     # Implement your postprocessing steps here
-    response = np.argmax(prediction)
-    return str(response)  # Convert the response to a string or appropriate format
-
+    response = "sample response"  # Replace with actual processing
+    return response
